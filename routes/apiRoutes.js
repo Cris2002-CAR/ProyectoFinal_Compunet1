@@ -1,4 +1,4 @@
-// Archivo: /routes/apiRoutes.js
+
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
@@ -184,6 +184,24 @@ router.post('/customer/checkout', (req, res) => {
     writeData(usersFile, users);
 
     res.status(200).json({ message: 'Compra realizada con éxito', order });
+  } catch (err) {
+    res.status(401).json({ message: 'Token inválido o expirado' });
+  }
+});
+
+// Ruta para obtener el historial de compras del cliente
+router.get('/customer/history', (req, res) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(403).json({ message: 'Se requiere token de autenticación' });
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (decoded.role !== 'customer') return res.status(403).json({ message: 'No autorizado' });
+
+    let users = readData(usersFile);
+    let user = users.find(u => u.username === decoded.username);
+
+    res.status(200).json(user.orders);
   } catch (err) {
     res.status(401).json({ message: 'Token inválido o expirado' });
   }

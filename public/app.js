@@ -75,6 +75,11 @@ function goToCart() {
   window.location.href = 'cart.html';
 }
 
+// Función para ir a la página del historial de compras
+function goToPurchaseHistory() {
+  window.location.href = 'history.html';
+}
+
 // Función para regresar a la página de productos
 function goToProducts() {
   window.location.href = 'customer.html';
@@ -225,6 +230,54 @@ function checkout() {
   });
 }
 
+// Función para cargar el historial de compras
+function loadPurchaseHistory() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Por favor inicia sesión para ver el historial de compras');
+    return;
+  }
+
+  fetch(`${BASE_URL}/api/customer/history`, {
+    method: 'GET',
+    headers: {
+      'Authorization': token,
+    },
+  })
+  .then(response => response.json())
+  .then(history => {
+    const historyDiv = document.getElementById('purchase-history');
+    historyDiv.innerHTML = ''; // Limpiar el historial de compras
+    if (history.length === 0) {
+      historyDiv.innerHTML = '<p>No tienes compras anteriores</p>';
+    } else {
+      history.forEach(order => {
+        let orderDetails = `
+          <div class="order">
+            <h3>Orden ID: ${order.orderId}</h3>
+            <p>Fecha: ${order.date}</p>
+            <p>Total: $${order.totalAmount}</p>
+            <div class="order-items">
+        `;
+        order.items.forEach(item => {
+          orderDetails += `
+            <div class="order-item">
+              <p>Producto: ${item.name}</p>
+              <p>Cantidad: ${item.quantity}</p>
+              <p>Total: $${item.total}</p>
+            </div>
+          `;
+        });
+        orderDetails += '</div></div>';
+        historyDiv.innerHTML += orderDetails;
+      });
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
 // Cargar los productos o el carrito dependiendo de la página
 document.addEventListener('DOMContentLoaded', () => {
   const role = localStorage.getItem('role');
@@ -233,6 +286,8 @@ document.addEventListener('DOMContentLoaded', () => {
       loadProducts();
     } else if (window.location.pathname.includes('cart.html')) {
       loadCartItems();
+    } else if (window.location.pathname.includes('history.html')) {
+      loadPurchaseHistory();
     }
   }
 });

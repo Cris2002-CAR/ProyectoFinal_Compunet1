@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Compras</title>
+  <link rel="stylesheet" href="styles/history.css">
+</head>
+<body>
+  <header>
+    <h1>Historial de Compras</h1>
+    <button onclick="goToProducts()">Regresar a Productos</button>
+  </header>
+
+  <main>
+    <h2>Compras Anteriores</h2>
+    <div id="purchase-history"></div>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPurchaseHistory();
+    });
+  </script>
+</body>
+</html>
