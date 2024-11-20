@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras</title>
+  <link rel="stylesheet" href="styles/cart.css">
+</head>
+<body>
+  <header>
+    <h1>Carrito de Compras</h1>
+    <button onclick="goToProducts()">Regresar a Productos</button>
+  </header>
+
+  <main>
+    <h2>Productos en tu Carrito</h2>
+    <div id="cart-items"></div>
+    <h3 id="total-amount"></h3>
+    <button onclick="checkout()">Finalizar Compra</button>
+
+    <div id="invoice" style="display: none;">
+      <h2>Factura</h2>
+      <div id="invoice-details"></div>
+      <h3 id="invoice-total"></h3>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

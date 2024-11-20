@@ -1,5 +1,3 @@
-// Archivo: /public/app.js
-
 // URL base del servidor
 const BASE_URL = 'http://localhost:3000';
 
@@ -72,32 +70,17 @@ function redirectUser(role) {
   }
 }
 
-// Función para que el administrador agregue un producto
-function addProduct() {
-  const token = localStorage.getItem('token');
-  const name = document.getElementById('product-name').value;
-  const description = document.getElementById('product-description').value;
-  const price = document.getElementById('product-price').value;
-  const quantity = document.getElementById('product-quantity').value;
-
-  fetch(`${BASE_URL}/api/admin/products`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': token,
-    },
-    body: JSON.stringify({ name, description, price, quantity }),
-  })
-  .then(response => response.json())
-  .then(data => {
-    alert(data.message);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+// Función para ir a la página del carrito
+function goToCart() {
+  window.location.href = 'cart.html';
 }
 
-// Función para cargar los productos disponibles para el cliente
+// Función para regresar a la página de productos
+function goToProducts() {
+  window.location.href = 'customer.html';
+}
+
+// Función para que el cliente vea los productos y agregue al carrito
 function loadProducts() {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -117,7 +100,11 @@ function loadProducts() {
     productList.innerHTML = ''; // Limpiar la lista de productos
     products.forEach(product => {
       const productDiv = document.createElement('div');
-      productDiv.textContent = `Nombre: ${product.name}, Precio: ${product.price}`;
+      productDiv.innerHTML = `
+        <p>Nombre: ${product.name}</p>
+        <p>Precio: ${product.price}</p>
+        <button onclick="addToCart(${product.id})">Agregar al Carrito</button>
+      `;
       productList.appendChild(productDiv);
     });
   })
@@ -126,10 +113,126 @@ function loadProducts() {
   });
 }
 
-// Cargar los productos si el usuario ya está autenticado
+// Función para agregar un producto al carrito
+function addToCart(productId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Por favor inicia sesión para agregar productos al carrito');
+    return;
+  }
+
+  fetch(`${BASE_URL}/api/customer/cart`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    },
+    body: JSON.stringify({ productId, quantity: 1 }),
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert(data.message);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+// Función para cargar los productos del carrito en la página del carrito
+function loadCartItems() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Por favor inicia sesión para ver el carrito');
+    return;
+  }
+
+  fetch(`${BASE_URL}/api/customer/cart`, {
+    method: 'GET',
+    headers: {
+      'Authorization': token,
+    },
+  })
+  .then(response => response.json())
+  .then(cartItems => {
+    const cartItemsDiv = document.getElementById('cart-items');
+    cartItemsDiv.innerHTML = ''; // Limpiar el contenido del carrito
+    if (cartItems.length === 0) {
+      cartItemsDiv.innerHTML = '<p>Tu carrito está vacío</p>';
+    } else {
+      let totalAmount = 0;
+      cartItems.forEach(item => {
+        totalAmount += item.price * item.quantity;
+        cartItemsDiv.innerHTML += `
+          <div class="cart-item">
+            <p>Producto: ${item.name}</p>
+            <p>Precio: ${item.price}</p>
+            <p>Cantidad: ${item.quantity}</p>
+          </div>
+        `;
+      });
+      document.getElementById('total-amount').innerText = `Total a Pagar: $${totalAmount}`;
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+// Función para finalizar la compra
+function checkout() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Por favor inicia sesión para finalizar la compra');
+    return;
+  }
+
+  fetch(`${BASE_URL}/api/customer/checkout`, {
+    method: 'POST',
+    headers: {
+      'Authorization': token,
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.message === 'Compra realizada con éxito') {
+      alert('Compra realizada con éxito');
+      // Mostrar detalles de la factura
+      const invoiceDiv = document.getElementById('invoice');
+      const invoiceDetailsDiv = document.getElementById('invoice-details');
+      let invoiceDetails = '';
+
+      data.order.items.forEach(item => {
+        invoiceDetails += `
+          <div class="invoice-item">
+            <p>Producto: ${item.name} - Cantidad: ${item.quantity} - Total: $${item.total}</p>
+          </div>
+        `;
+      });
+
+      invoiceDetailsDiv.innerHTML = invoiceDetails;
+      document.getElementById('invoice-total').innerText = `Monto Total: $${data.order.totalAmount}`;
+
+      // Mostrar la sección de la factura y ocultar el carrito
+      document.getElementById('cart-items').style.display = 'none';
+      document.getElementById('total-amount').style.display = 'none';
+      document.getElementById('invoice').style.display = 'block';
+    } else {
+      alert(data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+// Cargar los productos o el carrito dependiendo de la página
 document.addEventListener('DOMContentLoaded', () => {
   const role = localStorage.getItem('role');
   if (role === 'customer') {
-    loadProducts();
+    if (window.location.pathname.includes('customer.html')) {
+      loadProducts();
+    } else if (window.location.pathname.includes('cart.html')) {
+      loadCartItems();
+    }
   }
 });

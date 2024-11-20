@@ -5,5 +5,41 @@
     "role": "customer",
     "cart": [],
     "orders": []
+  },
+  {
+    "username": "Camilo",
+    "password": "100722",
+    "role": "customer",
+    "cart": [],
+    "orders": [
+      {
+        "orderId": 1,
+        "items": [
+          {
+            "productId": 1,
+            "name": "Barca",
+            "price": "1000",
+            "quantity": 3,
+            "total": 3000
+          },
+          {
+            "productId": 1,
+            "name": "Barca",
+            "price": "1000",
+            "quantity": 1,
+            "total": 1000
+          },
+          {
+            "productId": 1,
+            "name": "Barca",
+            "price": "1000",
+            "quantity": 1,
+            "total": 1000
+          }
+        ],
+        "totalAmount": 5000,
+        "date": "2024-11-20T18:42:12.066Z"
+      }
+    ]
   }
 ]

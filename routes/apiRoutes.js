@@ -93,10 +93,97 @@ router.post('/customer/cart', (req, res) => {
     const product = products.find(p => p.id === productId);
     if (!product) return res.status(404).json({ message: 'Producto no encontrado' });
 
-    user.cart.push({ productId, quantity });
+    const cartItem = user.cart.find(item => item.productId === productId);
+    if (cartItem) {
+      // Si el producto ya está en el carrito, aumentar la cantidad
+      cartItem.quantity += quantity;
+    } else {
+      // Si no está, agregar un nuevo ítem
+      user.cart.push({ productId, quantity });
+    }
+
     writeData(usersFile, users);
 
     res.status(200).json({ message: 'Producto agregado al carrito' });
+  } catch (err) {
+    res.status(401).json({ message: 'Token inválido o expirado' });
+  }
+});
+
+// Ruta para obtener los productos del carrito del cliente
+router.get('/customer/cart', (req, res) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(403).json({ message: 'Se requiere token de autenticación' });
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (decoded.role !== 'customer') return res.status(403).json({ message: 'No autorizado' });
+
+    let users = readData(usersFile);
+    let products = readData(productsFile);
+    let user = users.find(u => u.username === decoded.username);
+
+    // Mapear los productos del carrito con detalles completos del producto
+    const cartItems = user.cart.map(cartItem => {
+      const product = products.find(p => p.id === cartItem.productId);
+      return {
+        productId: cartItem.productId,
+        name: product.name,
+        price: product.price,
+        quantity: cartItem.quantity
+      };
+    });
+
+    res.status(200).json(cartItems);
+  } catch (err) {
+    res.status(401).json({ message: 'Token inválido o expirado' });
+  }
+});
+
+// Ruta para realizar una compra y generar una factura
+router.post('/customer/checkout', (req, res) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(403).json({ message: 'Se requiere token de autenticación' });
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (decoded.role !== 'customer') return res.status(403).json({ message: 'No autorizado' });
+
+    let users = readData(usersFile);
+    let products = readData(productsFile);
+    let user = users.find(u => u.username === decoded.username);
+
+    if (user.cart.length === 0) return res.status(400).json({ message: 'El carrito está vacío' });
+
+    // Generar la factura
+    let totalAmount = 0;
+    const orderItems = user.cart.map(cartItem => {
+      const product = products.find(p => p.id === cartItem.productId);
+      const itemTotal = product.price * cartItem.quantity;
+      totalAmount += itemTotal;
+      return {
+        productId: cartItem.productId,
+        name: product.name,
+        price: product.price,
+        quantity: cartItem.quantity,
+        total: itemTotal
+      };
+    });
+
+    const order = {
+      orderId: user.orders.length + 1,
+      items: orderItems,
+      totalAmount,
+      date: new Date().toISOString()
+    };
+
+    // Agregar la orden al historial de pedidos del usuario
+    user.orders.push(order);
+    // Vaciar el carrito
+    user.cart = [];
+    writeData(usersFile, users);
+
+    res.status(200).json({ message: 'Compra realizada con éxito', order });
   } catch (err) {
     res.status(401).json({ message: 'Token inválido o expirado' });
   }
