@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda en Línea - Inicio de Sesión</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Bienvenido a la Tienda en Línea</h1>
+  </header>
+
+  <main>
+    <div id="auth">
+      <input type="text" id="username" placeholder="Nombre de usuario">
+      <input type="password" id="password" placeholder="Contraseña">
+      <select id="role">
+        <option value="customer">Cliente</option>
+        <option value="admin">Administrador</option>
+      </select>
+      <button onclick="signup()">Registrarse</button>
+      <button onclick="login()">Iniciar Sesión</button>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

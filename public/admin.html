@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administrador - Gestión de Productos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Panel de Administración</h1>
+  </header>
+
+  <main>
+    <h2>Agregar Nuevo Producto</h2>
+    <div id="add-product">
+      <input type="text" id="product-name" placeholder="Nombre del producto">
+      <input type="text" id="product-description" placeholder="Descripción">
+      <input type="number" id="product-price" placeholder="Precio">
+      <input type="number" id="product-quantity" placeholder="Cantidad disponible">
+      <button onclick="addProduct()">Agregar Producto</button>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

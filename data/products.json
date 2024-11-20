@@ -1,0 +1,9 @@
+[
+  {
+    "id": 1,
+    "name": "Barca",
+    "description": "Camiseta del barca",
+    "price": "1000",
+    "quantity": "5"
+  }
+]
