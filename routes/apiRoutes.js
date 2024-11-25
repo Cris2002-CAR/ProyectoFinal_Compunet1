@@ -180,6 +180,14 @@ router.post('/customer/checkout', (req, res) => {
       const product = products.find(p => p.id === cartItem.productId);
       if (!product) throw new Error('Producto no encontrado');
 
+      // Validar si hay suficiente stock
+      if (product.quantity < cartItem.quantity) {
+        throw new Error(`Stock insuficiente para el producto: ${product.name}`);
+      }
+
+      // Reducir la cantidad del producto en el inventario
+      product.quantity -= cartItem.quantity;
+
       const itemTotal = product.price * cartItem.quantity;
       totalAmount += itemTotal;
 
@@ -199,10 +207,15 @@ router.post('/customer/checkout', (req, res) => {
       date: new Date().toISOString()
     };
 
-    // Agregar al historial
+    // Agregar al historial del cliente
     user.orders.push(order);
+
+    // Vaciar el carrito
     user.cart = [];
+
+    // Guardar los cambios en el archivo JSON
     writeData(usersFile, users);
+    writeData(productsFile, products);
 
     // Crear PDF
     const doc = new PDFDocument();
@@ -224,7 +237,7 @@ router.post('/customer/checkout', (req, res) => {
 
     res.status(200).json({ message: 'Compra realizada con éxito', order, pdfPath });
   } catch (err) {
-    res.status(401).json({ message: 'Token inválido o expirado', error: err.message });
+    res.status(400).json({ message: err.message });
   }
 });
 

@@ -10,7 +10,12 @@
     "username": "Camilo",
     "password": "100722",
     "role": "customer",
-    "cart": [],
+    "cart": [
+      {
+        "productId": 1,
+        "quantity": 1
+      }
+    ],
     "orders": [
       {
         "orderId": 1,
@@ -151,6 +156,48 @@
         ],
         "totalAmount": 650,
         "date": "2024-11-25T07:15:15.288Z"
+      },
+      {
+        "orderId": 10,
+        "items": [
+          {
+            "productId": 3,
+            "name": "Zapatos",
+            "price": 500,
+            "quantity": 1,
+            "total": 500
+          }
+        ],
+        "totalAmount": 500,
+        "date": "2024-11-25T07:22:59.353Z"
+      },
+      {
+        "orderId": 11,
+        "items": [
+          {
+            "productId": 1,
+            "name": "Barca",
+            "price": 1000,
+            "quantity": 1,
+            "total": 1000
+          }
+        ],
+        "totalAmount": 1000,
+        "date": "2024-11-25T07:27:23.723Z"
+      },
+      {
+        "orderId": 12,
+        "items": [
+          {
+            "productId": 1,
+            "name": "Barca",
+            "price": 1000,
+            "quantity": 1,
+            "total": 1000
+          }
+        ],
+        "totalAmount": 1000,
+        "date": "2024-11-25T07:30:29.754Z"
       }
     ]
   }

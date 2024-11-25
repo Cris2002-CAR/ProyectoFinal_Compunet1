@@ -101,24 +101,27 @@ function loadProducts() {
       'Authorization': token,
     },
   })
-  .then(response => response.json())
-  .then(products => {
-    const productList = document.getElementById('product-list');
-    productList.innerHTML = ''; // Limpiar la lista de productos
-    products.forEach(product => {
-      const productDiv = document.createElement('div');
-      productDiv.innerHTML = `
-        <p>Nombre: ${product.name}</p>
-        <p>Precio: ${product.price}</p>
-        <button onclick="addToCart(${product.id})">Agregar al Carrito</button>
-      `;
-      productList.appendChild(productDiv);
+    .then(response => response.json())
+    .then(products => {
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = ''; // Limpiar la lista de productos
+      products.forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.classList.add('product-card'); // Clase para estilo CSS
+        productDiv.innerHTML = `
+          <h3>${product.name}</h3>
+          <p><strong>Descripción:</strong> ${product.description}</p>
+          <p><strong>Precio:</strong> $${product.price}</p>
+          <button onclick="addToCart(${product.id})">Agregar al Carrito</button>
+        `;
+        productList.appendChild(productDiv);
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
     });
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
 }
+
 
 // Función para agregar un producto al carrito
 function addToCart(productId) {
@@ -238,8 +241,11 @@ function checkout() {
         // Mostrar factura en pantalla
         showInvoiceOnScreen(data.order);
 
-        // Generar y descargar la factura en PDF
+        // Generar y descargar la factura
         generateInvoicePDF(data.order);
+
+        // Actualizar la lista de productos
+        loadProducts();
       } else {
         alert(data.message);
       }
@@ -248,6 +254,7 @@ function checkout() {
       console.error('Error:', error);
     });
 }
+
 
 // Mostrar factura en pantalla
 function showInvoiceOnScreen(order) {

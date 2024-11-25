@@ -4,7 +4,7 @@
     "name": "Barca",
     "description": "Camiseta del barca",
     "price": 1000,
-    "quantity": 2
+    "quantity": 3
   },
   {
     "id": 2,
@@ -40,5 +40,12 @@
     "description": "Talla XL",
     "price": 650,
     "quantity": 5
+  },
+  {
+    "id": 7,
+    "name": "Zapatos nike",
+    "description": "numero 34",
+    "price": 600,
+    "quantity": 3
   }
 ]
