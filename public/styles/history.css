@@ -53,94 +53,52 @@ h2 {
   text-align: center;
 }
 
-h3 {
-  text-align: center;
-  color: #333;
-  margin: 1.5rem 0;
-}
-
-/* Lista de productos del carrito */
-#cart-items {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Diseño responsivo */
+/* Contenedor de historial de compras */
+#purchase-history {
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-.cart-item {
+.order {
   background: white;
-  padding: 1rem;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  padding: 1.5rem;
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.cart-item:hover {
+.order:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.cart-item p {
+.order h3 {
+  color: #4caf50;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.order p {
   margin: 0.5rem 0;
   font-size: 1rem;
 }
 
-#cart-items .cart-item:last-child {
-  margin-bottom: 0;
-}
-
-/* Botón de finalizar compra */
-button[onclick="checkout()"] {
-  display: block;
-  background: #4caf50;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  font-size: 1.2rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
-  margin: 2rem auto;
-  text-align: center;
-}
-
-button[onclick="checkout()"]:hover {
-  background: #45a049;
-}
-
-/* Factura */
-#invoice {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 2rem;
-  text-align: center;
-}
-
-#invoice h2 {
-  color: #4caf50;
-}
-
-#invoice-details {
-  text-align: left;
-  margin: 1rem auto;
-}
-
-.invoice-item {
-  padding: 10px 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.invoice-item:last-child {
-  border-bottom: none;
-}
-
-#invoice-total {
-  color: #333;
-  font-size: 1.2rem;
-  font-weight: bold;
+.order-items {
   margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.order-item:last-child {
+  border-bottom: none;
 }
 
 /* Responsivo */
@@ -158,8 +116,11 @@ button[onclick="checkout()"]:hover {
     font-size: 1.3rem;
   }
 
-  button[onclick="checkout()"] {
+  .order h3 {
     font-size: 1rem;
-    padding: 0.7rem 1.2rem;
+  }
+
+  .order-item {
+    font-size: 0.8rem;
   }
 }

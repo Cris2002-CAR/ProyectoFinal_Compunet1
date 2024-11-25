@@ -1,47 +1,118 @@
-/* Archivo: /public/styles/customer.css */
-
+/* Estilos globales */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f3f4f6; 
+  color: #333;
+}
+
+header {
+  background: #4caf50; 
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+header button {
+  background: white;
+  color: #4caf50;
+  border: 2px solid white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-left: 1rem;
+}
+
+header button:hover {
+  background: #45a049; 
+  color: white;
+}
+
+/* Estilos del contenido principal */
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  color: #4caf50;
+  border-bottom: 2px solid #4caf50;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* Lista de productos */
+#product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+  gap: 1.5rem;
+}
+
+#product-list div {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#product-list div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+#product-list p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+#product-list button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 1rem;
+}
+
+#product-list button:hover {
+  background: #45a049;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 1.5rem;
   }
-  
-  header {
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
+
+  header button {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
   }
-  
-  button {
-    padding: 8px 12px;
-    margin: 10px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+
+  h2 {
+    font-size: 1.2rem;
   }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  main {
-    padding: 20px;
-  }
-  
+
   #product-list div {
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    margin: 5px 0;
+    padding: 1rem;
   }
-  
-  #cart {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-  }
+}
