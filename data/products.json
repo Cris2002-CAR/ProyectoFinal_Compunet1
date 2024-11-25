@@ -5,5 +5,26 @@
     "description": "Camiseta del barca",
     "price": "1000",
     "quantity": "5"
+  },
+  {
+    "id": 2,
+    "name": "Camisa Bayern",
+    "description": "Camisa XL",
+    "price": 2000,
+    "quantity": 4
+  },
+  {
+    "id": 3,
+    "name": "Zapatos",
+    "description": "Talla L",
+    "price": 500,
+    "quantity": 2
+  },
+  {
+    "id": 4,
+    "name": "Zapatos",
+    "description": "Talla L",
+    "price": 500,
+    "quantity": 2
   }
 ]

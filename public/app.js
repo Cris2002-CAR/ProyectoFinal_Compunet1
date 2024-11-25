@@ -291,3 +291,125 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
+function addProduct() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Por favor inicia sesión como administrador para agregar productos');
+    return;
+  }
+
+  const name = document.getElementById('product-name').value;
+  const description = document.getElementById('product-description').value;
+  const price = parseFloat(document.getElementById('product-price').value);
+  const quantity = parseInt(document.getElementById('product-quantity').value);
+
+  if (!name || !description || isNaN(price) || isNaN(quantity)) {
+    alert('Por favor completa todos los campos correctamente.');
+    return;
+  }
+
+  fetch(`${BASE_URL}/api/admin/products`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    },
+    body: JSON.stringify({ name, description, price, quantity }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message) {
+        alert(data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+// Función para cargar los productos existentes para el administrador
+function loadAdminProducts() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Por favor inicia sesión como administrador para gestionar productos');
+    return;
+  }
+
+  fetch(`${BASE_URL}/api/customer/products`, {
+    method: 'GET',
+    headers: {
+      'Authorization': token,
+    },
+  })
+    .then(response => response.json())
+    .then(products => {
+      const productList = document.getElementById('product-list');
+      productList.innerHTML = ''; // Limpiar la lista de productos
+      products.forEach(product => {
+        const productDiv = document.createElement('div');
+        productDiv.innerHTML = `
+          <div>
+            <input type="text" id="name-${product.id}" value="${product.name}" placeholder="Nombre">
+            <input type="text" id="description-${product.id}" value="${product.description}" placeholder="Descripción">
+            <input type="number" id="price-${product.id}" value="${product.price}" placeholder="Precio">
+            <input type="number" id="quantity-${product.id}" value="${product.quantity}" placeholder="Cantidad">
+            <button onclick="updateProduct(${product.id})">Guardar Cambios</button>
+          </div>
+        `;
+        productList.appendChild(productDiv);
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+
+// Función para editar un producto existente
+function updateProduct(productId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Por favor inicia sesión como administrador para editar productos');
+    return;
+  }
+
+  const name = document.getElementById(`name-${productId}`).value;
+  const description = document.getElementById(`description-${productId}`).value;
+  const price = parseFloat(document.getElementById(`price-${productId}`).value);
+  const quantity = parseInt(document.getElementById(`quantity-${productId}`).value);
+
+  if (!name || !description || isNaN(price) || isNaN(quantity)) {
+    alert('Por favor completa todos los campos correctamente.');
+    return;
+  }
+
+  fetch(`${BASE_URL}/api/admin/products/${productId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token,
+    },
+    body: JSON.stringify({ name, description, price, quantity }),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.message) {
+        alert(data.message);
+        loadAdminProducts(); // Recargar los productos después de la actualización
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+
+// Función para cerrar sesión
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('role');
+  alert('Sesión cerrada correctamente');
+  window.location.href = 'index.html';
+}
+

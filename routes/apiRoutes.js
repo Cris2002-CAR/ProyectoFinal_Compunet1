@@ -207,4 +207,39 @@ router.get('/customer/history', (req, res) => {
   }
 });
 
+// Ruta para editar un producto existente
+router.put('/admin/products/:id', (req, res) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(403).json({ message: 'Se requiere token de autenticación' });
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (decoded.role !== 'admin') return res.status(403).json({ message: 'No autorizado' });
+
+    const { id } = req.params;
+    const { name, description, price, quantity } = req.body;
+
+    let products = readData(productsFile);
+    const productIndex = products.findIndex(p => p.id === parseInt(id));
+
+    if (productIndex === -1) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+
+    products[productIndex] = {
+      ...products[productIndex],
+      name,
+      description,
+      price,
+      quantity,
+    };
+
+    writeData(productsFile, products);
+    res.status(200).json({ message: 'Producto actualizado exitosamente' });
+  } catch (err) {
+    res.status(401).json({ message: 'Token inválido o expirado' });
+  }
+});
+
+
 module.exports = router;

@@ -39,6 +39,20 @@
         ],
         "totalAmount": 5000,
         "date": "2024-11-20T18:42:12.066Z"
+      },
+      {
+        "orderId": 2,
+        "items": [
+          {
+            "productId": 4,
+            "name": "Zapatos",
+            "price": 500,
+            "quantity": 1,
+            "total": 500
+          }
+        ],
+        "totalAmount": 500,
+        "date": "2024-11-25T05:07:50.290Z"
       }
     ]
   }

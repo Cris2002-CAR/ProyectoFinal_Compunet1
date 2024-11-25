@@ -9,6 +9,7 @@
 <body>
   <header>
     <h1>Panel de Administración</h1>
+    <button onclick="logout()">Cerrar Sesión</button>
   </header>
 
   <main>
@@ -19,6 +20,11 @@
       <input type="number" id="product-price" placeholder="Precio">
       <input type="number" id="product-quantity" placeholder="Cantidad disponible">
       <button onclick="addProduct()">Agregar Producto</button>
+    </div>
+
+    <h2>Editar Productos</h2>
+    <div id="edit-products">
+      <div id="product-list"></div>
     </div>
   </main>
 
