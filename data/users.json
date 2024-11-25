@@ -67,6 +67,90 @@
         ],
         "totalAmount": 1000,
         "date": "2024-11-25T05:40:23.136Z"
+      },
+      {
+        "orderId": 4,
+        "items": [
+          {
+            "productId": 5,
+            "name": "Camisa adidas",
+            "price": 1000,
+            "quantity": 1,
+            "total": 1000
+          }
+        ],
+        "totalAmount": 1000,
+        "date": "2024-11-25T06:56:14.907Z"
+      },
+      {
+        "orderId": 5,
+        "items": [
+          {
+            "productId": 1,
+            "name": "Barca",
+            "price": 1000,
+            "quantity": 2,
+            "total": 2000
+          }
+        ],
+        "totalAmount": 2000,
+        "date": "2024-11-25T06:56:47.364Z"
+      },
+      {
+        "orderId": 6,
+        "items": [
+          {
+            "productId": 2,
+            "name": "Camisa Bayern",
+            "price": 2000,
+            "quantity": 1,
+            "total": 2000
+          }
+        ],
+        "totalAmount": 2000,
+        "date": "2024-11-25T06:58:16.721Z"
+      },
+      {
+        "orderId": 7,
+        "items": [
+          {
+            "productId": 4,
+            "name": "Zapatos",
+            "price": 500,
+            "quantity": 1,
+            "total": 500
+          }
+        ],
+        "totalAmount": 500,
+        "date": "2024-11-25T07:02:40.705Z"
+      },
+      {
+        "orderId": 8,
+        "items": [
+          {
+            "productId": 3,
+            "name": "Zapatos",
+            "price": 500,
+            "quantity": 1,
+            "total": 500
+          }
+        ],
+        "totalAmount": 500,
+        "date": "2024-11-25T07:07:42.731Z"
+      },
+      {
+        "orderId": 9,
+        "items": [
+          {
+            "productId": 6,
+            "name": "Camiseta puma",
+            "price": 650,
+            "quantity": 1,
+            "total": 650
+          }
+        ],
+        "totalAmount": 650,
+        "date": "2024-11-25T07:15:15.288Z"
       }
     ]
   }

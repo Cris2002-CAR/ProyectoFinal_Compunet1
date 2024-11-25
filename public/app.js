@@ -185,7 +185,38 @@ function loadCartItems() {
   });
 }
 
-// Función para finalizar la compra
+function generateInvoicePDF(order) {
+  const { jsPDF } = window.jspdf;
+
+  const doc = new jsPDF();
+
+  // Título
+  doc.setFontSize(18);
+  doc.text('Factura de Compra', 10, 10);
+
+  // Información General
+  doc.setFontSize(12);
+  doc.text(`Orden ID: ${order.orderId}`, 10, 20);
+  doc.text(`Fecha: ${new Date(order.date).toLocaleString()}`, 10, 30);
+  doc.text(`Total: $${order.totalAmount}`, 10, 40);
+
+  // Productos
+  let yPosition = 50;
+  doc.text('Productos:', 10, yPosition);
+  yPosition += 10;
+
+  order.items.forEach(item => {
+    doc.text(`Producto: ${item.name}`, 10, yPosition);
+    doc.text(`Cantidad: ${item.quantity}`, 100, yPosition);
+    doc.text(`Total: $${item.total}`, 150, yPosition);
+    yPosition += 10;
+  });
+
+  // Guardar el PDF
+  doc.save(`Factura_${order.orderId}.pdf`);
+}
+
+
 function checkout() {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -199,38 +230,44 @@ function checkout() {
       'Authorization': token,
     },
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.message === 'Compra realizada con éxito') {
-      alert('Compra realizada con éxito');
-      // Mostrar detalles de la factura
-      const invoiceDiv = document.getElementById('invoice');
-      const invoiceDetailsDiv = document.getElementById('invoice-details');
-      let invoiceDetails = '';
+    .then(response => response.json())
+    .then(data => {
+      if (data.message === 'Compra realizada con éxito') {
+        alert('Compra realizada con éxito');
 
-      data.order.items.forEach(item => {
-        invoiceDetails += `
-          <div class="invoice-item">
-            <p>Producto: ${item.name} - Cantidad: ${item.quantity} - Total: $${item.total}</p>
-          </div>
-        `;
-      });
+        // Mostrar factura en pantalla
+        showInvoiceOnScreen(data.order);
 
-      invoiceDetailsDiv.innerHTML = invoiceDetails;
-      document.getElementById('invoice-total').innerText = `Monto Total: $${data.order.totalAmount}`;
+        // Generar y descargar la factura en PDF
+        generateInvoicePDF(data.order);
+      } else {
+        alert(data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
 
-      // Mostrar la sección de la factura y ocultar el carrito
-      document.getElementById('cart-items').style.display = 'none';
-      document.getElementById('total-amount').style.display = 'none';
-      document.getElementById('invoice').style.display = 'block';
-    } else {
-      alert(data.message);
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
+// Mostrar factura en pantalla
+function showInvoiceOnScreen(order) {
+  const invoiceDiv = document.getElementById('invoice');
+  invoiceDiv.style.display = 'block';
+
+  document.getElementById('invoice-order-id').innerText = order.orderId;
+  document.getElementById('invoice-date').innerText = new Date(order.date).toLocaleString();
+  document.getElementById('invoice-total').innerText = order.totalAmount;
+
+  const itemsList = document.getElementById('invoice-items');
+  itemsList.innerHTML = ''; // Limpiar el contenido previo
+
+  order.items.forEach(item => {
+    const li = document.createElement('li');
+    li.textContent = `Producto: ${item.name}, Cantidad: ${item.quantity}, Total: $${item.total}`;
+    itemsList.appendChild(li);
   });
 }
+
 
 // Función para cargar el historial de compras
 function loadPurchaseHistory() {

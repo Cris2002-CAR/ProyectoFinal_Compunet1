@@ -158,6 +158,9 @@ router.get('/customer/cart', (req, res) => {
 });
 
 // Ruta para realizar una compra y generar una factura
+const PDFDocument = require('pdfkit');
+const path = require('path');
+
 router.post('/customer/checkout', (req, res) => {
   const token = req.headers['authorization'];
   if (!token) return res.status(403).json({ message: 'Se requiere token de autenticación' });
@@ -172,12 +175,14 @@ router.post('/customer/checkout', (req, res) => {
 
     if (user.cart.length === 0) return res.status(400).json({ message: 'El carrito está vacío' });
 
-    // Generar la factura
     let totalAmount = 0;
     const orderItems = user.cart.map(cartItem => {
       const product = products.find(p => p.id === cartItem.productId);
+      if (!product) throw new Error('Producto no encontrado');
+
       const itemTotal = product.price * cartItem.quantity;
       totalAmount += itemTotal;
+
       return {
         productId: cartItem.productId,
         name: product.name,
@@ -194,17 +199,35 @@ router.post('/customer/checkout', (req, res) => {
       date: new Date().toISOString()
     };
 
-    // Agregar la orden al historial de pedidos del usuario
+    // Agregar al historial
     user.orders.push(order);
-    // Vaciar el carrito
     user.cart = [];
     writeData(usersFile, users);
 
-    res.status(200).json({ message: 'Compra realizada con éxito', order });
+    // Crear PDF
+    const doc = new PDFDocument();
+    const pdfPath = path.join(__dirname, `../invoices/Factura_${order.orderId}.pdf`);
+    doc.pipe(fs.createWriteStream(pdfPath));
+
+    doc.fontSize(18).text('Factura de Compra', { align: 'center' });
+    doc.fontSize(12).text(`Orden ID: ${order.orderId}`);
+    doc.text(`Fecha: ${order.date}`);
+    doc.text(`Total: $${order.totalAmount}`);
+
+    doc.moveDown();
+    doc.text('Productos:', { underline: true });
+    order.items.forEach(item => {
+      doc.text(`Producto: ${item.name} - Cantidad: ${item.quantity} - Total: $${item.total}`);
+    });
+
+    doc.end();
+
+    res.status(200).json({ message: 'Compra realizada con éxito', order, pdfPath });
   } catch (err) {
-    res.status(401).json({ message: 'Token inválido o expirado' });
+    res.status(401).json({ message: 'Token inválido o expirado', error: err.message });
   }
 });
+
 
 // Ruta para obtener el historial de compras del cliente
 router.get('/customer/history', (req, res) => {
