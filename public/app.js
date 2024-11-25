@@ -30,6 +30,8 @@ function signup() {
   });
 }
 
+
+
 // Función para iniciar sesión
 function login() {
   const username = document.getElementById('username').value;
@@ -281,34 +283,40 @@ function loadPurchaseHistory() {
 // Cargar los productos o el carrito dependiendo de la página
 document.addEventListener('DOMContentLoaded', () => {
   const role = localStorage.getItem('role');
-  if (role === 'customer') {
-    if (window.location.pathname.includes('customer.html')) {
-      loadProducts();
-    } else if (window.location.pathname.includes('cart.html')) {
-      loadCartItems();
-    } else if (window.location.pathname.includes('history.html')) {
-      loadPurchaseHistory();
-    }
+  const pathname = window.location.pathname;
+
+  // Cargar contenido según el rol y la página actual
+  if (role === 'customer' && pathname.includes('customer.html')) {
+    loadProducts();
+  } else if (role === 'customer' && pathname.includes('cart.html')) {
+    loadCartItems();
+  } else if (role === 'customer' && pathname.includes('history.html')) {
+    loadPurchaseHistory();
+  } else if (role === 'admin' && pathname.includes('admin.html')) {
+    loadAdminProducts();
   }
 });
 
 function addProduct() {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token'); // Asegúrate de obtener el token directamente
   if (!token) {
     alert('Por favor inicia sesión como administrador para agregar productos');
     return;
   }
 
-  const name = document.getElementById('product-name').value;
-  const description = document.getElementById('product-description').value;
+  const name = document.getElementById('product-name').value.trim();
+  const description = document.getElementById('product-description').value.trim();
   const price = parseFloat(document.getElementById('product-price').value);
   const quantity = parseInt(document.getElementById('product-quantity').value);
 
-  if (!name || !description || isNaN(price) || isNaN(quantity)) {
+  // Validación de los datos
+  if (!name || !description || isNaN(price) || isNaN(quantity) || price <= 0 || quantity < 0) {
     alert('Por favor completa todos los campos correctamente.');
+    console.log({ name, description, price, quantity }); // Log para depurar
     return;
   }
 
+  // Enviar la solicitud al backend
   fetch(`${BASE_URL}/api/admin/products`, {
     method: 'POST',
     headers: {
@@ -319,14 +327,19 @@ function addProduct() {
   })
     .then(response => response.json())
     .then(data => {
+      console.log(data); // Log para verificar la respuesta del servidor
       if (data.message) {
-        alert(data.message);
+        alert('Producto agregado exitosamente');
+        loadAdminProducts(); // Recargar la lista de productos después de agregar
+      } else {
+        alert('Error al agregar el producto: ' + (data.message || 'Error desconocido'));
       }
     })
     .catch(error => {
-      console.error('Error:', error);
+      console.error('Error al agregar producto:', error);
     });
 }
+
 
 // Función para cargar los productos existentes para el administrador
 function loadAdminProducts() {
@@ -336,7 +349,7 @@ function loadAdminProducts() {
     return;
   }
 
-  fetch(`${BASE_URL}/api/customer/products`, {
+  fetch(`${BASE_URL}/api/admin/products`, {
     method: 'GET',
     headers: {
       'Authorization': token,
@@ -361,9 +374,11 @@ function loadAdminProducts() {
       });
     })
     .catch(error => {
-      console.error('Error:', error);
+      console.error('Error al cargar productos:', error);
     });
 }
+
+
 
 
 // Función para editar un producto existente

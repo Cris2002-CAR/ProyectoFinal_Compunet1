@@ -1,4 +1,4 @@
-// Archivo: /middleware/auth.js
+
 
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'mi_secreta_llave';

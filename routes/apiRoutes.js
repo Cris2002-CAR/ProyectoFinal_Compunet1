@@ -76,6 +76,23 @@ router.get('/customer/products', (req, res) => {
   res.json(products);
 });
 
+// Ruta para que el administrador vea los productos
+router.get('/admin/products', (req, res) => {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(403).json({ message: 'Se requiere token de autenticación' });
+
+  try {
+    const decoded = jwt.verify(token, SECRET_KEY);
+    if (decoded.role !== 'admin') return res.status(403).json({ message: 'No autorizado' });
+
+    const products = readData(productsFile);
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(401).json({ message: 'Token inválido o expirado' });
+  }
+});
+
+
 // Ruta para agregar productos al carrito del cliente
 router.post('/customer/cart', (req, res) => {
   const token = req.headers['authorization'];
